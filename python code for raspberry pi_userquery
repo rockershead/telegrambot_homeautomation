@@ -1,0 +1,65 @@
+#!/usr/bin/python
+import RPi.GPIO as GPIO
+import sys
+import time
+import Adafruit_DHT
+import socket
+import subprocess
+import sys
+import os
+
+
+
+
+humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, 4)
+#print (temperature)
+
+TCP_IP = '35.237.163.36'
+TCP_PORT = 60001
+BUFFER_SIZE = 1024
+MESSAGE = "Start telegram"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+s.send(MESSAGE)
+
+data = s.recv(BUFFER_SIZE)
+#print "received data:", data
+#sending based on prompt
+
+while True:
+ data2 = s.recv(BUFFER_SIZE)
+ #print "received data:", data2
+ if data2=="temperature?":
+  s.send(str(temperature))
+ if data2=="led on":
+  GPIO.setmode(GPIO.BOARD)
+
+ #set this pin as output
+  GPIO.setup(13, GPIO.OUT)
+
+ #set this pin to logic high
+  GPIO.output(13, GPIO.HIGH)
+
+ if data2=="led off":
+  GPIO.setmode(GPIO.BOARD)
+
+ #set this pin as output
+  GPIO.setup(13, GPIO.OUT)
+
+ #set this pin to logic high
+  GPIO.output(13, GPIO.LOW)
+ if data2=="led status":
+  GPIO.setmode(GPIO.BOARD)
+
+  #set this pin as INPUT
+
+  GPIO.setup(13, GPIO.IN)
+
+
+  if GPIO.input(13):
+   s.send("dude led is on")
+  else:
+   s.send("dude led is off")
+
+  GPIO.setup(13, GPIO.OUT)
