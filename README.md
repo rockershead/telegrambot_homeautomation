@@ -1,6 +1,6 @@
 # telegrambot_homeautomation
 
-Bots are now the future.It can helps us control devices in our homes or even give us weather/news updates.
+Bots are now the future.It helps us control devices in our homes or even give us weather/news updates.It can do many things.
 
 Hence I have used telegram's own api to create a bot which communicates with the raspberry pi 3 to get readings from my temperature/humidity sensor,control led and also check if led is on or off. The plus point is that I was able to make a notification system when temperature exceeds 25 degrees Celsius and if motion sensor detects any movement;a notification message will be sent to my phone.
 
