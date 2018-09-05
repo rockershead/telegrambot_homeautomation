@@ -1,0 +1,79 @@
+#!/usr/bin/python
+import RPi.GPIO as GPIO
+import sys
+import time
+import Adafruit_DHT
+import socket
+import subprocess
+import sys
+import os
+
+
+
+
+
+TCP_IP = '35.237.163.36'
+TCP_PORT = 60002
+BUFFER_SIZE = 1024
+MESSAGE = "Start telegram"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+s.send(MESSAGE)
+
+
+data = s.recv(BUFFER_SIZE)
+#print "received data:", data
+#sending based on prompt
+
+
+#Sending message on its own accord
+
+humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, 4)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(40, GPIO.IN)
+initial_state=GPIO.input(40)
+
+
+
+if temperature> 25:
+ initial_logic=1
+ urgentmessage="may day. may day.temperature at danger level: "+str(temperature)
+ s.send(urgentmessage)
+
+else:
+ initial_logic=0
+
+
+
+
+while True:
+ #print(initial_logic)
+ humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, 18)
+
+ if temperature> 25:
+  final_logic=1
+
+
+
+ else:
+  final_logic=0
+
+ logic_change=final_logic-initial_logic
+
+ if logic_change>0:
+  urgentmessage="may day. may day.temperature at danger level: "+str(temperature)
+  s.send(urgentmessage)
+ initial_logic=final_logic
+
+ #time.sleep(5)
+
+
+
+##for motion sensor
+ final_state=GPIO.input(40)
+ change=final_state-initial_state
+ if((change>0) or (change <0)):
+  s.send("Bro....MOTION DETECTED");
+  ##print(final_state)
+ initial_state=final_state
