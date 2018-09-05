@@ -1,0 +1,75 @@
+#!/usr/bin/python
+
+import telepot, time
+import sys
+import socket
+import subprocess
+import sys
+import os
+
+# Creates a bot using the token provided by BotFather using telegram api
+bot = telepot.Bot('573215803:AAGodDS4FrE9nZhBEHZmPHz7MjxJ9ztP6yw')
+
+
+
+
+def handle(msg):
+ content_type, chat_type, chat_id = telepot.glance(msg)
+ #print 'Connection address:', addr
+ if (content_type == 'text'):
+  command = msg['text']
+ 
+
+
+
+ if  "temperature?" in command:
+  conn.send("temperature?")
+  temp_data=conn.recv(BUFFER_SIZE)
+  bot.sendMessage(chat_id,temp_data)
+
+ if "led on" in command:
+  conn.send("led on")
+ if "led off" in command:
+  conn.send("led off")
+
+ if "led status" in command:
+  conn.send("led status")
+  status=conn.recv(BUFFER_SIZE)
+  bot.sendMessage(chat_id,status)
+
+
+TCP_IP = ''
+TCP_PORT = 60001
+BUFFER_SIZE = 1024
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((TCP_IP, TCP_PORT))
+s.listen(1)
+
+conn, addr = s.accept()
+#print 'Connection address:', addr
+
+
+data = conn.recv(BUFFER_SIZE)
+#print "received data:", data
+
+conn.send("lets start telegram service")
+
+bot.message_loop(handle)
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+# Wait for new messages
+while 1:
+ time.sleep(20)
